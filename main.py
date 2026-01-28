@@ -1,27 +1,19 @@
-import requests, bs4, json, datetime, re
+import json, datetime, re
+import Search as search
+import Write as write
 
-class HttpRequest:
-    def __init__(self, address):
-        self.address = address
-
-    def getUrl(self):
-        return self.address
-    
-    def getHtml(self):
-        req = requests.get(self.address)
-        return req.text
+SOURCE_URL = "https://www.prospektmaschine.de/hypermarkte/"
 
 def main():
-    try:
-        url = input(str("Zada URL stranky: ")) #https://www.prospektmaschine.de/hypermarkte/
-    except:
-        print("Toto nie je string")
-    httpReq = HttpRequest(url)
-    htmlCode = httpReq.getHtml()
-    with open("html.txt", "w") as file:
-        file.write(htmlCode)
-    # hladat podla id: left-category-shops
-
+    source_html = search.Html(SOURCE_URL)
+    source_html.request()
+    
+    html_search = search.HtmlSearch(source_html)
+    
+    links = html_search.get_shop_links()
+    for l in links:
+        print(l)
+    #requestnut linky kazdeho obchodu / linku a z tamat vytiahnut info, prve ale preskumat html kod v prehiadaci
 if __name__ == "__main__":
     main()
 
