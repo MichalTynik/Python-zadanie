@@ -1,4 +1,3 @@
-import json, datetime, re
 import Search as search
 import Write as write
 
@@ -11,9 +10,22 @@ def main():
     html_search = search.HtmlSearch(source_html)
     
     links = html_search.get_shop_links()
-    for l in links:
-        print(l)
-    #requestnut linky kazdeho obchodu / linku a z tamat vytiahnut info, prve ale preskumat html kod v prehiadaci
+    
+    info = []
+    
+    for sub_link in links:
+        sub_html = search.Html(sub_link)
+        sub_html.request()
+        sub_html_search = search.HtmlSearch(sub_html)
+        info_temp = sub_html_search.get_prospekt()
+        if info_temp:
+            info.append(info_temp)
+
+    save = write.Data("data.json")
+    save.save_info(info)
+        
+        
+        
 if __name__ == "__main__":
     main()
 
